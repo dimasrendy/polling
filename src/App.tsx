@@ -6,12 +6,18 @@ function uid() {
   return Math.random().toString(36).slice(2, 9);
 }
 
+type Person = {
+  id: string;
+  name: string;
+  votes: number;
+};
+
 export default function PollingApp() {
   const [title, setTitle] = useState("Who should be our team lead?");
-  const [people, setPeople] = useState(() => {
+  const [people, setPeople] = useState<Person[]>(() => {
     const saved = localStorage.getItem("poll_people_v1");
     return saved
-      ? JSON.parse(saved)
+      ? (JSON.parse(saved) as Person[])
       : [
           { id: uid(), name: "Ayla", votes: 0 },
           { id: uid(), name: "Bima", votes: 0 },
@@ -51,7 +57,7 @@ export default function PollingApp() {
     setInput("");
   }
 
-  function removePerson(id) {
+  function removePerson(id: string) {
     setPeople((prev) => prev.filter((p) => p.id !== id));
     setSelected((prev) => prev.filter((sid) => sid !== id));
   }
@@ -63,7 +69,7 @@ export default function PollingApp() {
     localStorage.removeItem("poll_selected_v1");
   }
 
-  function handleVote(id) {
+  function handleVote(id: string) {
     if (selected.includes(id)) return; // prevent duplicate vote on same person
 
     setPeople((prev) =>
@@ -323,7 +329,7 @@ function ConfettiBurst() {
   );
 }
 
-function confettiColor(i) {
+function confettiColor(i: number) {
   const palette = [
     "#111827",
     "#6EE7B7",
